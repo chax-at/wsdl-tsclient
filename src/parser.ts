@@ -48,19 +48,18 @@ function parseDefinition(
     const defName = changeCase(name, { pascalCase: true });
 
     Logger.debug(`Parsing Definition ${stack.join(".")}.${name}`);
+    const checkName = `${options.modelNamePreffix}${defName}${options.modelNameSuffix}`;
 
     let nonCollisionDefName: string;
     try {
-        nonCollisionDefName = parsedWsdl.findNonCollisionDefinitionName(defName);
+        nonCollisionDefName = parsedWsdl.findNonCollisionDefinitionName(checkName);
     } catch (err) {
         const e = new Error(`Error for finding non-collision definition name for ${stack.join(".")}.${name}`);
         e.stack.split("\n").slice(0, 2).join("\n") + "\n" + err.stack;
         throw e;
     }
     const definition: Definition = {
-        name: `${options.modelNamePreffix}${changeCase(nonCollisionDefName, { pascalCase: true })}${
-            options.modelNameSuffix
-        }`,
+        name: nonCollisionDefName,
         sourceName: name,
         docs: [name],
         properties: [],
